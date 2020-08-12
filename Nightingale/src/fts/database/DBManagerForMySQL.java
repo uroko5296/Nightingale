@@ -14,10 +14,10 @@ import fts.utils.Document;
 import fts.utils.PostingList;
 import fts.utils.Token;
 
-public class MySQLManager implements DBManager {
+public class DBManagerForMySQL implements DBManager {
 
 	public static void main(String[] args) {
-		DBManager manager = new MySQLManager();
+		DBManager manager = new DBManagerForMySQL();
 		int r = manager.getTotalDocumentNum();
 
 		System.out.println("MySQLManager#main	r:" + r);

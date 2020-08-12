@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fts.database.DBManager;
-import fts.database.MySQLManager;
+import fts.database.DBManagerForMySQL;
 import fts.utils.PostingListImpl;
 import fts.utils.Token;
 
@@ -25,7 +25,7 @@ public class RetrieverImpl implements Retriever {
 	@Override
 	public List<Record> getSortedRecords() {
 		if (dbManager_ == null) {
-			dbManager_ = new MySQLManager();
+			dbManager_ = new DBManagerForMySQL();
 		}
 
 		if (sortedRecords_ == null) {

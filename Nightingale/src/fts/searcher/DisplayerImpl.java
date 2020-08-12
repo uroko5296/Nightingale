@@ -3,7 +3,7 @@ package fts.searcher;
 import java.util.SortedMap;
 
 import fts.database.DBManager;
-import fts.database.MySQLManager;
+import fts.database.DBManagerForMySQL;
 import fts.searcher.Searcher.SearchResult;
 
 public class DisplayerImpl implements Displayer {
@@ -19,7 +19,7 @@ public class DisplayerImpl implements Displayer {
 	public void displayResult() {
 		System.out.println("DisplayerImpl#displayResult");
 		if (dbManager_ == null) {
-			dbManager_ = new MySQLManager();
+			dbManager_ = new DBManagerForMySQL();
 		}
 		searchResult_.keySet().forEach(e -> {
 			int d = searchResult_.get(e);

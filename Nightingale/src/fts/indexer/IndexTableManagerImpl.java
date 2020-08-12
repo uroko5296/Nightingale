@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fts.database.DBManager;
-import fts.database.MySQLManager;
+import fts.database.DBManagerForMySQL;
 import fts.index.tokenizer.Tokenizer;
 import fts.utils.Document;
 import fts.utils.PostingList;
@@ -21,7 +21,7 @@ public class IndexTableManagerImpl implements IndexTableManager {
 
 	public IndexTableManagerImpl() {
 		table_ = new IndexTableImpl(DEFAULT_CAPACITY);
-		dbManager_ = new MySQLManager();
+		dbManager_ = new DBManagerForMySQL();
 	}
 
 	@Override

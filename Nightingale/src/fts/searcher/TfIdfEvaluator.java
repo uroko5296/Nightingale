@@ -3,7 +3,7 @@ package fts.searcher;
 import java.util.Map;
 
 import fts.database.DBManager;
-import fts.database.MySQLManager;
+import fts.database.DBManagerForMySQL;
 import fts.index.tokenizer.Tokenizer;
 
 public class TfIdfEvaluator implements Evaluator {
@@ -46,7 +46,7 @@ public class TfIdfEvaluator implements Evaluator {
 			Tokenizer tokenizer,
 			Map<Integer, Integer> phraseCounts,
 			int tokensPerPhrases) {
-		dbManager_ = new MySQLManager();
+		dbManager_ = new DBManagerForMySQL();
 		tokenizer_ = tokenizer;
 		phraseCounts_ = phraseCounts;
 		tokensPerPhrases_ = tokensPerPhrases;
