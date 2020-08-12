@@ -46,8 +46,7 @@ public class SearcherImpl implements Searcher {
 	@Override
 	public SearchResult search(String query, int n) {
 		if (sortedRecords_ == null) {
-			QueryAnalyzer queryAnalyzer = new QueryAnalyzerImpl(query, tokenizer_);
-			Retriever recordAcquirer = new RetrieverImpl(queryAnalyzer.sortedToekns());
+			Retriever recordAcquirer = new RetrieverImpl(tokenizer_.parseAll(query));
 			sortedRecords_ = recordAcquirer.getSortedRecords();
 		}
 
