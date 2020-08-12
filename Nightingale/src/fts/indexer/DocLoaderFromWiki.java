@@ -1,4 +1,4 @@
-package fts.loader;
+package fts.indexer;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,8 +21,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.google.common.collect.Sets;
 
 import fts.index.tokenizer.Tokenizer;
-import fts.indexer.IndexTableManager;
-import fts.indexer.IndexTableManagerImpl;
 import fts.utils.Document;
 import fts.utils.RichDocument;
 

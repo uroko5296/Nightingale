@@ -1,4 +1,4 @@
-package fts.loader;
+package fts.indexer;
 
 import fts.index.tokenizer.Tokenizer;
 

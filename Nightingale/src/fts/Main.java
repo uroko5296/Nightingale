@@ -7,8 +7,8 @@ import com.google.common.collect.Sets;
 
 import fts.index.tokenizer.NGramTokenizer2;
 import fts.index.tokenizer.Tokenizer;
-import fts.loader.DocLoader;
-import fts.loader.DocLoaderFromWiki;
+import fts.indexer.DocLoader;
+import fts.indexer.DocLoaderFromWiki;
 import fts.searcher.Displayer;
 import fts.searcher.DisplayerImpl;
 import fts.searcher.Searcher;
