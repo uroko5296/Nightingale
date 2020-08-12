@@ -7,8 +7,8 @@ import com.google.common.collect.Sets;
 
 import fts.index.tokenizer.NGramTokenizer2;
 import fts.index.tokenizer.Tokenizer;
-import fts.loader.Loader;
-import fts.loader.WikiLoaderViaPython;
+import fts.loader.DocLoader;
+import fts.loader.DocLoaderFromWiki;
 import fts.searcher.Displayer;
 import fts.searcher.DisplayerImpl;
 import fts.searcher.Searcher;
@@ -59,7 +59,7 @@ public class Main {
 			String folderName,
 			int fromIndex,
 			int toIndex) throws Exception {
-		Loader wikiLoader = new WikiLoaderViaPython(wikiFilePath, tokenizer, maxWikiDocumentCounts);
+		DocLoader wikiLoader = new DocLoaderFromWiki(wikiFilePath, tokenizer, maxWikiDocumentCounts);
 		for (int i = fromIndex; i < toIndex; i++) {
 			wikiLoader.setFilePath(wikiFilePath + folderName + "\\" + wikiFilePrefix + String.format("%02d", i));
 			wikiLoader.load();

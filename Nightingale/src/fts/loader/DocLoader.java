@@ -2,7 +2,7 @@ package fts.loader;
 
 import fts.index.tokenizer.Tokenizer;
 
-public interface Loader {
+public interface DocLoader {
 
 	void setTokenizer(Tokenizer tokenzer);
 

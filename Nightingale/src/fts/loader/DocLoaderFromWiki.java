@@ -26,7 +26,7 @@ import fts.indexer.IndexTableManagerImpl;
 import fts.utils.Document;
 import fts.utils.RichDocument;
 
-public class WikiLoaderViaPython extends DefaultHandler implements Loader {
+public class DocLoaderFromWiki extends DefaultHandler implements DocLoader {
 
 	Tokenizer tokenizer_;//コンストラクタでセットすることもできるし、後からsetTokenizerでセットすることもできる。
 	String fpath_;
@@ -35,7 +35,7 @@ public class WikiLoaderViaPython extends DefaultHandler implements Loader {
 	 * 最初のコンストラクタ作成時には、パスとトークナイザの両方を設定する必要がある。
 	 * トークナイザは後から変更できる。
 	 */
-	public WikiLoaderViaPython(
+	public DocLoaderFromWiki(
 			String fpath,
 			Tokenizer tokenizer,
 			int maxWikiDocumentCounts) throws Exception {
@@ -122,6 +122,9 @@ public class WikiLoaderViaPython extends DefaultHandler implements Loader {
 		return newPath;
 	}
 
+	/*
+	 * 最後は有効化する
+	 */
 	private void postprocess(String newFile) {
 		File f = new File(newFile);
 		f.delete();
