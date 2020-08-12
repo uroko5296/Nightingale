@@ -2,7 +2,7 @@ package fts.searcher;
 
 import java.util.List;
 
-import fts.index.tokenizer.Tokenizer;
+import fts.tokenizer.Tokenizer;
 import fts.utils.Token;
 
 public class QueryAnalyzerImpl extends QueryAnalyzerAbst {

@@ -1,6 +1,6 @@
 package fts.indexer;
 
-import fts.index.tokenizer.Tokenizer;
+import fts.tokenizer.Tokenizer;
 
 public interface DocLoader {
 

@@ -1,6 +1,6 @@
 package fts.searcher;
 
-import fts.index.tokenizer.Tokenizer;
+import fts.tokenizer.Tokenizer;
 
 public abstract class QueryAnalyzerAbst implements QueryAnalyzer {
 

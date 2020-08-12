@@ -1,4 +1,4 @@
-package fts.index.tokenizer;
+package fts.tokenizer;
 
 import java.util.List;
 

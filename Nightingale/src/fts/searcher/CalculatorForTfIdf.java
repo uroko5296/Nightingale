@@ -4,7 +4,7 @@ import java.util.Map;
 
 import fts.database.DBManager;
 import fts.database.DBManagerForMySQL;
-import fts.index.tokenizer.Tokenizer;
+import fts.tokenizer.Tokenizer;
 
 public class CalculatorForTfIdf implements Calculator {
 

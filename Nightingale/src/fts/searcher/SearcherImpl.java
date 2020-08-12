@@ -3,8 +3,8 @@ package fts.searcher;
 import java.util.List;
 import java.util.Map;
 
-import fts.index.tokenizer.Tokenizer;
 import fts.searcher.Calculator.CalcResult;
+import fts.tokenizer.Tokenizer;
 import fts.utils.Record;
 
 public class SearcherImpl implements Searcher {

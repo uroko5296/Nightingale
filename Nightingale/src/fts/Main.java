@@ -5,14 +5,14 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
-import fts.index.tokenizer.NGramTokenizer2;
-import fts.index.tokenizer.Tokenizer;
 import fts.indexer.DocLoader;
 import fts.indexer.DocLoaderFromWiki;
 import fts.searcher.Displayer;
 import fts.searcher.DisplayerImpl;
 import fts.searcher.Searcher;
 import fts.searcher.SearcherImpl;
+import fts.tokenizer.NGramTokenizer2;
+import fts.tokenizer.Tokenizer;
 
 public class Main {
 

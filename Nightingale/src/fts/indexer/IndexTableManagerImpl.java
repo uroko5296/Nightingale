@@ -7,7 +7,7 @@ import java.util.Set;
 
 import fts.database.DBManager;
 import fts.database.DBManagerForMySQL;
-import fts.index.tokenizer.Tokenizer;
+import fts.tokenizer.Tokenizer;
 import fts.utils.Document;
 import fts.utils.PostingList;
 import fts.utils.Token;

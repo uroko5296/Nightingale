@@ -20,7 +20,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.google.common.collect.Sets;
 
-import fts.index.tokenizer.Tokenizer;
+import fts.tokenizer.Tokenizer;
 import fts.utils.Document;
 import fts.utils.RichDocument;
 
@@ -35,7 +35,7 @@ public class DocLoaderFromWiki extends DefaultHandler implements DocLoader {
 	 */
 	public DocLoaderFromWiki(
 			String fpath,
-			Tokenizer tokenizer,
+			fts.tokenizer.Tokenizer tokenizer,
 			int maxWikiDocumentCounts) throws Exception {
 		fpath_ = fpath;
 		setTokenizer(tokenizer);

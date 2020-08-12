@@ -1,6 +1,6 @@
 package fts.indexer;
 
-import fts.index.tokenizer.Tokenizer;
+import fts.tokenizer.Tokenizer;
 import fts.utils.Document;
 
 public interface IndexTableManager {
