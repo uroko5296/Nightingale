@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import fts.index.tokenizer.Tokenizer;
-import fts.searcher.Evaluator.EvalResult;
+import fts.searcher.Calculator.CalcResult;
 
 public class SearcherImpl implements Searcher {
 
@@ -32,7 +32,7 @@ public class SearcherImpl implements Searcher {
 	 * candidateDocs_のkeySetで表わされる文書IDの集合について、
 	 * tf-idf値を算出したマップ。
 	 */
-	EvalResult tfIdfs_;
+	CalcResult tfIdfs_;
 	SearchResult searchResult_;
 
 	public SearcherImpl(Tokenizer tokenizer) {
@@ -63,8 +63,8 @@ public class SearcherImpl implements Searcher {
 		}
 
 		if (tfIdfs_ == null) {
-			Evaluator evaluator = new TfIdfEvaluator(tokenizer_, phraseCounts_, sortedRecords_.size());
-			tfIdfs_ = evaluator.evaluate();
+			Calculator evaluator = new CalculatorForTfIdf(tokenizer_, phraseCounts_, sortedRecords_.size());
+			tfIdfs_ = evaluator.calculate();
 		}
 
 		System.out.println("SearcherImpl#search	tfIdfs:" + tfIdfs_.toString());
@@ -75,7 +75,7 @@ public class SearcherImpl implements Searcher {
 		return searchResult_;
 	}
 
-	private SearchResult generateSearchResult(EvalResult e) {
+	private SearchResult generateSearchResult(CalcResult e) {
 		SearchResult s = new SearchResult();
 		e.forEach((docId, eval) -> s.put(eval, docId));
 		return s;

@@ -6,7 +6,7 @@ import fts.database.DBManager;
 import fts.database.DBManagerForMySQL;
 import fts.index.tokenizer.Tokenizer;
 
-public class TfIdfEvaluator implements Evaluator {
+public class CalculatorForTfIdf implements Calculator {
 
 	/*
 	 * Tf-Idf値の算出器。
@@ -40,9 +40,9 @@ public class TfIdfEvaluator implements Evaluator {
 	/*
 	 * 出力値。文書IDからTf-Idf値へのマップ。
 	 */
-	EvalResult tfIdfs_;
+	CalcResult tfIdfs_;
 
-	public TfIdfEvaluator(
+	public CalculatorForTfIdf(
 			Tokenizer tokenizer,
 			Map<Integer, Integer> phraseCounts,
 			int tokensPerPhrases) {
@@ -53,7 +53,7 @@ public class TfIdfEvaluator implements Evaluator {
 	}
 
 	@Override
-	public EvalResult evaluate() {
+	public CalcResult calculate() {
 		if (tfIdfs_ != null)
 			return tfIdfs_;
 
@@ -63,7 +63,7 @@ public class TfIdfEvaluator implements Evaluator {
 
 		int df = phraseCounts_.keySet().size();
 
-		tfIdfs_ = new EvalResult();
+		tfIdfs_ = new CalcResult();
 		phraseCounts_.keySet().forEach((Integer d) -> {
 			int phraseCount = phraseCounts_.get(d);
 			int totalCount = getTotalCountOf(d);

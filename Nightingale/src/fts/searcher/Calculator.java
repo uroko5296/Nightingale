@@ -5,19 +5,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public interface Evaluator {
+public interface Calculator {
 
-	EvalResult evaluate();
+	CalcResult calculate();
 
 	/*
 	 * EvalResultはMap<Integer, Double>の委譲クラス。
 	 * 文書IDごとの評価値を表す。
 	 */
-	class EvalResult implements Map<Integer, Double> {
+	class CalcResult implements Map<Integer, Double> {
 
 		Map<Integer, Double> r_;
 
-		EvalResult() {
+		CalcResult() {
 			r_ = new HashMap<Integer, Double>();
 		}
 
