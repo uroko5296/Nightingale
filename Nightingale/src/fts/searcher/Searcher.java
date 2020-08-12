@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 public interface Searcher {
 
-	public SearchResult search(int n);
+	public SearchResult search(String query, int n);
 
 	/*
 	 * SearchResultは単なるSortedMap<Double, Integer>の委譲クラス。

@@ -8,8 +8,10 @@ import fts.searcher.Evaluator.EvalResult;
 
 public class SearcherImpl implements Searcher {
 
+	Tokenizer tokenizer_;//コンストラクタで受け取る。
+
 	List<Record> sortedRecords_;
-	Tokenizer tokenizer_;
+	int resultNum_ = -1;
 
 	/*
 	 * トークン全てが出現する文書IDの集合。
@@ -33,14 +35,21 @@ public class SearcherImpl implements Searcher {
 	EvalResult tfIdfs_;
 	SearchResult searchResult_;
 
-	public SearcherImpl(List<Record> sortedRecords, Tokenizer tokenizer) {
-		sortedRecords_ = sortedRecords;
+	public SearcherImpl(Tokenizer tokenizer) {
+		if (tokenizer == null) {
+			throw new IllegalArgumentException("null tokenizer!");
+		}
 		tokenizer_ = tokenizer;
-
 	}
 
 	@Override
-	public SearchResult search(int n) {
+	public SearchResult search(String query, int n) {
+		if (sortedRecords_ == null) {
+			QueryAnalyzer queryAnalyzer = new QueryAnalyzerImpl(query, tokenizer_);
+			RecordAcquirer recordAcquirer = new RecordAcquirerImpl(queryAnalyzer.sortedToekns());
+			sortedRecords_ = recordAcquirer.getSortedRecords();
+		}
+
 		if (candidateDocs_ == null) {
 			CandidateDocsPicker picker = new CandidateDocsPickerImpl(sortedRecords_);
 			candidateDocs_ = picker.getCandidateDocs();

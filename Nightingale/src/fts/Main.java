@@ -11,10 +11,6 @@ import fts.loader.Loader;
 import fts.loader.WikiLoaderViaPython;
 import fts.searcher.Displayer;
 import fts.searcher.DisplayerImpl;
-import fts.searcher.QueryAnalyzer;
-import fts.searcher.QueryAnalyzerImpl;
-import fts.searcher.RecordAcquirer;
-import fts.searcher.RecordAcquirerImpl;
 import fts.searcher.Searcher;
 import fts.searcher.SearcherImpl;
 
@@ -39,13 +35,13 @@ public class Main {
 
 		String flag = args[0];
 		switch (flag) {
-		case "-i":
+		case "-i"://例えば、「-i AA 0 10」などとコマンドを渡す。
 			String folderName = args[1];
 			int fromIndex = Integer.parseInt(args[2]);
 			int toIndex = Integer.parseInt(args[3]);
 			buildIndexFromWiki(wikiXmlPath2, tokenizer, maxWikiDocumentCounts, folderName, fromIndex, toIndex);
 			break;
-		case "-s":
+		case "-s"://例えば、「-s 情報学」などとコマンドを渡す。
 			String query = args[1];
 			assert (query != null && query.length() > 0);
 			search(query, tokenizer, resultN);
@@ -72,10 +68,8 @@ public class Main {
 	}
 
 	static void search(String query, Tokenizer tokenizer, int resultNum) {
-		QueryAnalyzer queryAnalyzer = new QueryAnalyzerImpl(query, tokenizer);
-		RecordAcquirer recordAcquirer = new RecordAcquirerImpl(queryAnalyzer.sortedToekns());
-		Searcher searcher = new SearcherImpl(recordAcquirer.getSortedRecords(), tokenizer);
-		Displayer displayer = new DisplayerImpl(searcher.search(resultNum));
+		Searcher searcher = new SearcherImpl(tokenizer);
+		Displayer displayer = new DisplayerImpl(searcher.search(query, resultNum));
 		displayer.displayResult();
 	}
 }
