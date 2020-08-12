@@ -2,7 +2,7 @@ package fts.searcher;
 
 import java.util.Map;
 
-public interface PhraseChecker {
+public interface PhraseCounter {
 
 	class CheckedRecords {
 

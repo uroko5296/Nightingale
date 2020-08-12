@@ -58,7 +58,7 @@ public class SearcherImpl implements Searcher {
 		//System.out.println("SearchImpl#search sortedRecords_:");
 		//sortedRecords_.forEach(r -> System.out.print(r.toString()));
 		if (phraseCounts_ == null) {
-			PhraseChecker checker = new PhraseCheckerImpl(sortedRecords_, candidateDocs_);
+			PhraseCounter checker = new PhraseCounterImpl(sortedRecords_, candidateDocs_);
 			phraseCounts_ = checker.phraseCheck();
 		}
 

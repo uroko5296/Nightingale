@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PhraseCheckerImpl implements PhraseChecker {
+public class PhraseCounterImpl implements PhraseCounter {
 
 	List<Record> sortedRecords_;
 	/*
@@ -37,7 +37,7 @@ public class PhraseCheckerImpl implements PhraseChecker {
 	Map<Integer, Integer> phraseCounts_;
 
 	//.reduce((acc, t) -> acc.addAll(t.keySet())
-	public PhraseCheckerImpl(
+	public PhraseCounterImpl(
 			List<Record> sortedRecords,
 			List<Integer> candidateDocs) {
 		sortedRecords_ = sortedRecords;
