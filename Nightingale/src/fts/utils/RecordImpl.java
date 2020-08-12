@@ -1,8 +1,6 @@
-package fts.searcher;
+package fts.utils;
 
-import fts.utils.PostingList;
-
-class RecordImpl implements Record {
+public class RecordImpl implements Record {
 
 	private final int tokenId_;//idで持つこととする。
 	//private final Token token_;
@@ -17,7 +15,7 @@ class RecordImpl implements Record {
 
 	private final int positionInQuery_;
 
-	RecordImpl(int tokenId, PostingList postingList, int positionInQuery) {
+	public RecordImpl(int tokenId, PostingList postingList, int positionInQuery) {
 		tokenId_ = tokenId;
 		postingList_ = postingList;
 		documentIds_ = postingList.keySet().stream().mapToInt(d -> d).toArray();

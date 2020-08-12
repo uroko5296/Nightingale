@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import fts.utils.Record;
+
 public class PhraseCounterImpl implements PhraseCounter {
 
 	List<Record> sortedRecords_;

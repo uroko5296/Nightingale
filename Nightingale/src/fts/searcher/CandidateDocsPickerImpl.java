@@ -3,6 +3,8 @@ package fts.searcher;
 import java.util.ArrayList;
 import java.util.List;
 
+import fts.utils.Record;
+
 public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 
 	List<Record> sortedRecords_;

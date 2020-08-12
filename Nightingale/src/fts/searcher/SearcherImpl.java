@@ -5,6 +5,7 @@ import java.util.Map;
 
 import fts.index.tokenizer.Tokenizer;
 import fts.searcher.Calculator.CalcResult;
+import fts.utils.Record;
 
 public class SearcherImpl implements Searcher {
 

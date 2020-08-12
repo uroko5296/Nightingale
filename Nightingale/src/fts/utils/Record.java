@@ -1,8 +1,6 @@
-package fts.searcher;
+package fts.utils;
 
-import fts.utils.PostingList;
-
-interface Record {
+public interface Record {
 
 	int getTokenId();
 

@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import fts.database.DBManager;
 import fts.database.DBManagerForMySQL;
 import fts.utils.PostingListImpl;
+import fts.utils.Record;
+import fts.utils.RecordImpl;
 import fts.utils.Token;
 
 public class RetrieverImpl implements Retriever {
