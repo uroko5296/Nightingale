@@ -2,7 +2,7 @@ package fts.searcher;
 
 import java.util.List;
 
-public interface RecordAcquirer {
+public interface Retriever {
 
 	/*
 	 * indexerでいうIndexTableのような存在。

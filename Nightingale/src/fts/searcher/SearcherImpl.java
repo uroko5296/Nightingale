@@ -46,7 +46,7 @@ public class SearcherImpl implements Searcher {
 	public SearchResult search(String query, int n) {
 		if (sortedRecords_ == null) {
 			QueryAnalyzer queryAnalyzer = new QueryAnalyzerImpl(query, tokenizer_);
-			RecordAcquirer recordAcquirer = new RecordAcquirerImpl(queryAnalyzer.sortedToekns());
+			Retriever recordAcquirer = new RetrieverImpl(queryAnalyzer.sortedToekns());
 			sortedRecords_ = recordAcquirer.getSortedRecords();
 		}
 

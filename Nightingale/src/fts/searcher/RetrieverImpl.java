@@ -9,7 +9,7 @@ import fts.database.MySQLManager;
 import fts.utils.PostingListImpl;
 import fts.utils.Token;
 
-public class RecordAcquirerImpl implements RecordAcquirer {
+public class RetrieverImpl implements Retriever {
 
 	List<Token> rawTokens_;
 
@@ -17,7 +17,7 @@ public class RecordAcquirerImpl implements RecordAcquirer {
 
 	List<Record> sortedRecords_;
 
-	public RecordAcquirerImpl(List<Token> rawTokens) {
+	public RetrieverImpl(List<Token> rawTokens) {
 
 		rawTokens_ = rawTokens;
 	}
