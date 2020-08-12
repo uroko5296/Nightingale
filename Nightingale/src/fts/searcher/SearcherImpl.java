@@ -1,0 +1,75 @@
+package fts.searcher;
+
+import java.util.List;
+import java.util.Map;
+
+import fts.index.tokenizer.Tokenizer;
+import fts.searcher.Evaluator.EvalResult;
+
+public class SearcherImpl implements Searcher {
+
+	List<Record> sortedRecords_;
+	Tokenizer tokenizer_;
+
+	/*
+	 * トークン全てが出現する文書IDの集合。
+	 * （トークン全てが出現するだけではフレーズとして出現するとは限らないことに注意）
+	 * Map<文書ID, Map<トークンID, List<p1,p2,...>>>
+	 * List<p1,p2,...>はポジションのリスト。
+	 */
+	List<Integer> candidateDocs_;
+	Map<Integer, Integer> bases_;
+
+	/*
+	 * candidateDocs_のkeySetで表わされる文書IDの集合について、
+	 * フレーズとして出現する回数をカウントしたマップ。
+	 */
+	Map<Integer, Integer> phraseCounts_;
+
+	/*
+	 * candidateDocs_のkeySetで表わされる文書IDの集合について、
+	 * tf-idf値を算出したマップ。
+	 */
+	EvalResult tfIdfs_;
+	SearchResult searchResult_;
+
+	public SearcherImpl(List<Record> sortedRecords, Tokenizer tokenizer) {
+		sortedRecords_ = sortedRecords;
+		tokenizer_ = tokenizer;
+
+	}
+
+	@Override
+	public SearchResult search(int n) {
+		if (candidateDocs_ == null) {
+			CandidateDocsPicker picker = new CandidateDocsPickerImpl(sortedRecords_);
+			candidateDocs_ = picker.getCandidateDocs();
+		}
+
+		//System.out.println("SearchImpl#search sortedRecords_:");
+		//sortedRecords_.forEach(r -> System.out.print(r.toString()));
+		if (phraseCounts_ == null) {
+			PhraseChecker checker = new PhraseCheckerImpl(sortedRecords_, candidateDocs_);
+			phraseCounts_ = checker.phraseCheck();
+		}
+
+		if (tfIdfs_ == null) {
+			Evaluator evaluator = new TfIdfEvaluator(tokenizer_, phraseCounts_, sortedRecords_.size());
+			tfIdfs_ = evaluator.evaluate();
+		}
+
+		System.out.println("SearcherImpl#search	tfIdfs:" + tfIdfs_.toString());
+
+		if (searchResult_ == null) {
+			searchResult_ = generateSearchResult(tfIdfs_);
+		}
+		return searchResult_;
+	}
+
+	private SearchResult generateSearchResult(EvalResult e) {
+		SearchResult s = new SearchResult();
+		e.forEach((docId, eval) -> s.put(eval, docId));
+		return s;
+	}
+
+}
