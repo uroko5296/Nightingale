@@ -42,6 +42,8 @@ public interface DBManager {
 
 	public String dbGetBodyOfDocument(int documentId);
 
+	public int dbGetBodySizeOfDocument(int documentId);
+
 	public String dbGetTitleOfDocument(int documentId);
 
 	public void dbUpdatePostingList(Token token, PostingList postingListToAdd);//いる？これよりもdbUpdatePostings的な関数の方がいる？

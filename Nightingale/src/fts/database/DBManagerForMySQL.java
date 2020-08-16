@@ -488,6 +488,62 @@ public class DBManagerForMySQL implements DBManager {
 		return r;
 	}
 
+	private final String sqlSelectBodySizeOfDocumentsIdById = "SELECT bdsize FROM " + DOCUMENTS + " WHERE id=?;";
+
+	@Override
+	public int dbGetBodySizeOfDocument(int documentId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		int r = -1;
+
+		try {
+
+			String url = connectionURL();
+			con = DriverManager.getConnection(
+					url, //タイムゾーンを指定しないとなぜかエラーが出る。
+					USER, //"root",
+					PASS//"password"
+			);// "password"の部分は，各自の環境に合わせて変更してください。
+
+			pstmt = con.prepareStatement(sqlSelectBodySizeOfDocumentsIdById);
+			pstmt.setInt(1, documentId);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				r = rs.getInt("bdsize");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return r;
+	}
+
 	private final String sqlCountAllDocuments = "SELECT COUNT(id) FROM " + DOCUMENTS + ";";
 
 	@Override

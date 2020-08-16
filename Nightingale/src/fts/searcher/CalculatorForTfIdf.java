@@ -76,8 +76,7 @@ public class CalculatorForTfIdf implements Calculator {
 	}
 
 	private int getTotalCountOf(Integer d) {
-		String body = dbManager_.dbGetBodyOfDocument(d);
-		int totalTokenNum = tokenizer_.parseAll(body).size();
+		int totalTokenNum = dbManager_.dbGetBodySizeOfDocument(d);
 		int totalPhraseNum = totalTokenNum / tokensPerPhrases_;
 		return totalPhraseNum;
 	}
