@@ -6,11 +6,13 @@ import java.util.Map;
 import fts.searcher.Calculator.CalcResult;
 import fts.tokenizer.Tokenizer;
 import fts.utils.Record;
+import fts.utils.Token;
 
 public class SearcherImpl implements Searcher {
 
 	Tokenizer tokenizer_;//コンストラクタで受け取る。
 
+	List<Token> tokenList_;
 	List<Record> sortedRecords_;
 	int resultNum_ = -1;
 
@@ -45,9 +47,13 @@ public class SearcherImpl implements Searcher {
 
 	@Override
 	public SearchResult search(String query, int n) {
+		if (tokenList_ == null) {
+			tokenList_ = tokenizer_.parseAll(query);
+		}
+
 		if (sortedRecords_ == null) {
-			Retriever recordAcquirer = new RetrieverImpl(tokenizer_.parseAll(query));
-			sortedRecords_ = recordAcquirer.getSortedRecords();
+			Retriever retriever = new RetrieverImpl(tokenList_);
+			sortedRecords_ = retriever.getSortedRecords();
 		}
 
 		if (candidateDocs_ == null) {
@@ -55,15 +61,13 @@ public class SearcherImpl implements Searcher {
 			candidateDocs_ = picker.getCandidateDocs();
 		}
 
-		//System.out.println("SearchImpl#search sortedRecords_:");
-		//sortedRecords_.forEach(r -> System.out.print(r.toString()));
 		if (phraseCounts_ == null) {
 			PhraseCounter checker = new PhraseCounterImpl(sortedRecords_, candidateDocs_);
 			phraseCounts_ = checker.phraseCheck();
 		}
 
 		if (tfIdfs_ == null) {
-			Calculator evaluator = new CalculatorForTfIdf(tokenizer_, phraseCounts_, sortedRecords_.size());
+			Calculator evaluator = new CalculatorForTfIdf(tokenizer_, phraseCounts_, tokenList_.size());
 			tfIdfs_ = evaluator.calculate();
 		}
 

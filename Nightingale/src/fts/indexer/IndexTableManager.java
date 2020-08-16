@@ -7,7 +7,7 @@ public interface IndexTableManager {
 
 	void addDocumentIntoIndexTable(Document document, Tokenizer tokenizer);
 
-	void addPartsOfDocumentIndexTable(int documentId, String title, String partsOfBodyToAdd);
+	void addPartsOfDocumentIndexTable(int documentId, String title, String partsOfBodyToAdd, int bodySize);
 
 	void flushTable();
 }

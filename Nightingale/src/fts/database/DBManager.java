@@ -24,9 +24,9 @@ import fts.utils.Token;
 
 public interface DBManager {
 
-	public int dbGetDocumentIdAndAddDocumentIfNotExists(Document document);
+	public int dbGetDocumentIdAndAddDocumentIfNotExists(Document document, int bodySize);
 
-	public void dbAddDocument(Document document);//いる？
+	public void dbAddDocument(Document document, int bodySize);//いる？
 
 	public int dbGetDocumentId(Document document);//いる？サーチの時に使う？
 
@@ -38,7 +38,7 @@ public interface DBManager {
 
 	public int dbGetTokenId(Token token);//いる？サーチの時に使う？
 
-	public void dbUpdateBodyOfDocument(int documentId, String title, String partsOfBodyToAdd);
+	public void dbUpdateBodyOfDocument(int documentId, String title, String partsOfBodyToAdd, int bodySize);
 
 	public String dbGetBodyOfDocument(int documentId);
 

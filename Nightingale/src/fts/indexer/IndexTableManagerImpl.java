@@ -26,16 +26,19 @@ public class IndexTableManagerImpl implements IndexTableManager {
 
 	@Override
 	public void addDocumentIntoIndexTable(Document document, Tokenizer tokenizer) {
-		/*
-		 * ストレージ上の文書用のテーブル（転置インデックスではない。）に文書を追加し、文書IDを取得する。
-		 */
-		int documentId = dbManager_.dbGetDocumentIdAndAddDocumentIfNotExists(document);
 
 		/*
 		 * 文書IDとトークンリストからポスティングリストを作る。
 		 */
-		//まずはトークンリストの位置からミニ転置インデックスを更新する。
+
 		List<Token> tokenList = tokenizer.parseAll(document.getBody());
+
+		/*
+		 * ストレージ上の文書用のテーブル（転置インデックスではない。）に文書を追加し、文書IDを取得する。
+		 */
+		int documentId = dbManager_.dbGetDocumentIdAndAddDocumentIfNotExists(document, tokenList.size());
+
+		//まずはトークンリストの位置からミニ転置インデックスを更新する。
 		for (int position = 0; position < tokenList.size(); position++) {
 			table_.addPosting(tokenList.get(position), documentId, position);
 		}
@@ -69,7 +72,7 @@ public class IndexTableManagerImpl implements IndexTableManager {
 	}
 
 	@Override
-	public void addPartsOfDocumentIndexTable(int documentId, String title, String partsOfBodyToAdd) {
-		dbManager_.dbUpdateBodyOfDocument(documentId, title, partsOfBodyToAdd);
+	public void addPartsOfDocumentIndexTable(int documentId, String title, String partsOfBodyToAdd, int bodySize) {
+		dbManager_.dbUpdateBodyOfDocument(documentId, title, partsOfBodyToAdd, bodySize);
 	}
 }

@@ -38,9 +38,11 @@ public class DBManagerForMySQL implements DBManager {
 	 *
 	 * RichDocument用は、
 	 * document2, tokens2
+	 *
+	 * 8/16追記：document5,tokens5以前のテーブルには非対応。（bsizeカラムが存在しないため。）
 	 */
-	private static final String DOCUMENTS = "documents4";
-	private static final String TOKENS = "tokens4";
+	private static final String DOCUMENTS = "documents5";
+	private static final String TOKENS = "tokens5";
 
 	/*
 	 *
@@ -51,20 +53,20 @@ public class DBManagerForMySQL implements DBManager {
 	}
 
 	@Override
-	public int dbGetDocumentIdAndAddDocumentIfNotExists(Document document) {
+	public int dbGetDocumentIdAndAddDocumentIfNotExists(Document document, int bodySize) {
 		int documentId = dbGetDocumentId(document);
 		if (documentId < 0) {
-			dbAddDocument(document);
+			dbAddDocument(document, bodySize);
 			return dbGetDocumentId(document);
 		} else {
 			return documentId;
 		}
 	}
 
-	private final String sqlAddDocument = "INSERT INTO " + DOCUMENTS + " (title,body) VALUES(?,?);";
+	private final String sqlAddDocument = "INSERT INTO " + DOCUMENTS + " (title,body,bdsize) VALUES(?,?,?);";
 
 	@Override
-	public void dbAddDocument(Document document) {
+	public void dbAddDocument(Document document, int bodySize) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -81,6 +83,7 @@ public class DBManagerForMySQL implements DBManager {
 			pstmt = con.prepareStatement(sqlAddDocument);
 			pstmt.setString(1, document.getTitle());
 			pstmt.setString(2, document.getBody());
+			pstmt.setInt(3, bodySize);
 
 			pstmt.execute();
 
@@ -543,10 +546,10 @@ public class DBManagerForMySQL implements DBManager {
 	}
 
 	private final String sqlInsertBodyOnDuplicateKeyUpdate = "INSERT INTO " + DOCUMENTS
-			+ " (id,title,body) values (?,\"\",?) ON DUPLICATE KEY UPDATE body = CONCAT(body, ?);";
+			+ " (id,title,body,bdsize) values (?,\"\",?,?) ON DUPLICATE KEY UPDATE body = CONCAT(body, ?), bsize = bsize + ?;";
 
 	@Override
-	public void dbUpdateBodyOfDocument(int documentId, String title, String partsOfBodyToAdd) {
+	public void dbUpdateBodyOfDocument(int documentId, String title, String partsOfBodyToAdd, int bodySize) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -564,7 +567,9 @@ public class DBManagerForMySQL implements DBManager {
 			pstmt = con.prepareStatement(sqlInsertBodyOnDuplicateKeyUpdate);
 			pstmt.setInt(1, documentId);
 			pstmt.setString(2, partsOfBodyToAdd);
-			pstmt.setString(3, partsOfBodyToAdd);
+			pstmt.setInt(3, bodySize);
+			pstmt.setString(4, partsOfBodyToAdd);
+			pstmt.setInt(5, bodySize);
 			pstmt.execute();
 
 		} catch (SQLException e) {
