@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -514,6 +515,81 @@ public class DBManagerForMySQL implements DBManager {
 
 			if (rs.next()) {
 				r = rs.getInt("bdsize");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return r;
+	}
+
+	private final String sqlSelectBodySizeOfDocumentsIdById1 = "SELECT * FROM " + DOCUMENTS
+			+ " WHERE id IN (";
+	private final String sqlSelectBodySizeOfDocumentsIdById2 = "?,";
+	private final String sqlSelectBodySizeOfDocumentsIdById3 = ");";
+
+	@Override
+	public Map<Integer, Integer> dbGetMapOfBodySizeOfDocument(Set<Integer> docIds) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		if (docIds == null || docIds.size() < 1) {
+			throw new IllegalArgumentException("empty set!");
+		}
+
+		List<Integer> docIdList = docIds.stream().collect(Collectors.toList());
+		String sql = sqlSelectBodySizeOfDocumentsIdById1;
+		for (int i = 0; i < docIdList.size(); i++) {
+			sql = sql + sqlSelectBodySizeOfDocumentsIdById2;
+		}
+		sql = sql.substring(0, sql.length() - 1);
+		sql = sql + sqlSelectBodySizeOfDocumentsIdById3;
+
+		Map<Integer, Integer> r = new HashMap<Integer, Integer>();
+
+		try {
+
+			String url = connectionURL();
+			con = DriverManager.getConnection(
+					url, //タイムゾーンを指定しないとなぜかエラーが出る。
+					USER, //"root",
+					PASS//"password"
+			);// "password"の部分は，各自の環境に合わせて変更してください。
+
+			pstmt = con.prepareStatement(sql);
+			for (int i = 0; i < docIdList.size(); i++) {
+				pstmt.setInt(i + 1, docIdList.get(i));
+			}
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				int bdsize = rs.getInt("bdsize");
+				r.put(id, bdsize);
 			}
 
 		} catch (SQLException e) {

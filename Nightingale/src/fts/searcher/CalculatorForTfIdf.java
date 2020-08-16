@@ -33,6 +33,9 @@ public class CalculatorForTfIdf implements Calculator {
 	//データベースの総文書数
 	int N_ = -1;
 
+	//文書IDから文書サイズへのマップ
+	Map<Integer, Integer> mapFromDocIdToBodySize_;
+
 	//List<Token> tokenizedQuery_;
 	//フレーズはクエリに対応して一つ存在するとする。
 	//クエリが分割された場合は今は考えない。
@@ -61,6 +64,10 @@ public class CalculatorForTfIdf implements Calculator {
 			N_ = dbManager_.getTotalDocumentNum();
 		}
 
+		if (mapFromDocIdToBodySize_ == null) {
+			mapFromDocIdToBodySize_ = dbManager_.dbGetMapOfBodySizeOfDocument(phraseCounts_.keySet());
+		}
+
 		int df = phraseCounts_.keySet().size();
 
 		tfIdfs_ = new CalcResult();
@@ -76,7 +83,7 @@ public class CalculatorForTfIdf implements Calculator {
 	}
 
 	private int getTotalCountOf(Integer d) {
-		int totalTokenNum = dbManager_.dbGetBodySizeOfDocument(d);
+		int totalTokenNum = mapFromDocIdToBodySize_.get(d);
 		int totalPhraseNum = totalTokenNum / tokensPerPhrases_;
 		return totalPhraseNum;
 	}
