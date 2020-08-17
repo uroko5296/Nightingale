@@ -1,5 +1,6 @@
 package fts.database;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,6 +39,8 @@ public interface DBManager {
 
 	public int dbGetTokenId(Token token);//いる？サーチの時に使う？
 
+	public List<Integer> dbGetTokenIds(List<Token> tokenList);//いる？サーチの時に使う？
+
 	public void dbUpdateBodyOfDocument(int documentId, String title, String partsOfBodyToAdd, int bodySize);
 
 	public String dbGetBodyOfDocument(int documentId);
@@ -53,6 +56,8 @@ public interface DBManager {
 	public void dbUpdatePostingListMap(Map<Token, PostingList> postingListMap);//いる？これよりもdbUpdatePostings的な関数の方がいる？
 
 	public String dbGetPostingList(Token token);//いる？サーチの時に使う？
+
+	public List<String> dbGetPostingLists(List<Token> tokens);//いる？サーチの時に使う？
 
 	public int getTotalDocumentNum();
 

@@ -18,7 +18,7 @@ public class Main {
 
 	private static final Set<Character> IGNORED_CHARS = Sets.newHashSet('_', ' ', ':', ';', '[', ']', '{', '}', '<',
 			'>', '（', '\'', '\"',
-			'）', '(', ')', '。', '.', '「', '」', '\n', '\r', '#', '|', '*');
+			'）', '(', ')', '。', '.', '「', '」', '\n', '\r', '#', '|', '*', '、');
 
 	static final String wikiXmlPath = "C:\\Users\\kotaro takeda\\Documents\\Programming\\03_searchengin\\workspace\\data\\jawiki-20200501-pages-articles.xml";
 	static final String wikiXmlPath2 = "C:\\Users\\kotaro takeda\\Documents\\Programming\\03_searchengin\\workspace\\data\\text\\";
@@ -32,6 +32,7 @@ public class Main {
 		Tokenizer tokenizer = new NGramTokenizer2(ngramN, IGNORED_CHARS);
 
 		System.out.println("Main#main	args:" + Arrays.toString(args));
+		long startTime = System.currentTimeMillis();
 
 		String flag = args[0];
 		switch (flag) {
@@ -49,6 +50,9 @@ public class Main {
 		default:
 			System.out.println("do nothing.");
 		}
+
+		long elapsedTime = System.currentTimeMillis() - startTime;
+		System.out.println("Main#main elapsedTime:" + elapsedTime + "[ms]");
 
 	}
 

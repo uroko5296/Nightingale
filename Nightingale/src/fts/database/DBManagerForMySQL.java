@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -242,6 +243,78 @@ public class DBManagerForMySQL implements DBManager {
 		return r;
 	}
 
+	private final String sqlSelectTokensIdByToken1 = "SELECT id FROM " + TOKENS + " WHERE token IN (";
+	private final String sqlSelectTokensIdByToken2 = "?,";
+	private final String sqlSelectTokensIdByToken3 = ");";
+
+	@Override
+	public List<Integer> dbGetTokenIds(List<Token> tokens) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		if (tokens == null || tokens.size() < 1) {
+			throw new IllegalArgumentException("empty set!");
+		}
+
+		String sql = sqlSelectTokensIdByToken1;
+		for (int i = 0; i < tokens.size(); i++) {
+			sql = sql + sqlSelectTokensIdByToken2;
+		}
+		sql = sql.substring(0, sql.length() - 1);
+		sql = sql + sqlSelectTokensIdByToken3;
+
+		List<Integer> r = new ArrayList<Integer>();
+
+		try {
+
+			String url = connectionURL();
+			con = DriverManager.getConnection(
+					url, //タイムゾーンを指定しないとなぜかエラーが出る。
+					USER, //"root",
+					PASS//"password"
+			);// "password"の部分は，各自の環境に合わせて変更してください。
+
+			pstmt = con.prepareStatement(sql);
+			for (int i = 0; i < tokens.size(); i++) {
+				pstmt.setString(i + 1, tokens.get(i).getToken());
+			}
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				int tokenId = rs.getInt("id");
+				r.add(tokenId);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return r;
+	}
+
 	/*
 	 * tokenがなければINSERT、あればUPDATEしたい。
 	 * 過去に読んでDBに記録されている文書と、今回追加する文書は別であることを前提とする。
@@ -402,6 +475,81 @@ public class DBManagerForMySQL implements DBManager {
 				pstmt.close();
 			}
 			return postingListAsString;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
+	private final String sqlSelectPostings1 = "SELECT postings FROM " + TOKENS + " WHERE token IN (";
+	private final String sqlSelectPostings2 = "?,";
+	private final String sqlSelectPostings3 = ");";
+
+	@Override
+	public List<String> dbGetPostingLists(List<Token> tokens) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		if (tokens == null || tokens.size() < 1) {
+			throw new IllegalArgumentException("empty set!");
+		}
+
+		String sql = sqlSelectPostings1;
+		for (int i = 0; i < tokens.size(); i++) {
+			sql = sql + sqlSelectPostings2;
+		}
+		sql = sql.substring(0, sql.length() - 1);
+		sql = sql + sqlSelectPostings3;
+
+		List<String> r = new ArrayList<String>();
+
+		try {
+
+			String url = connectionURL();
+			con = DriverManager.getConnection(
+					url, //タイムゾーンを指定しないとなぜかエラーが出る。
+					USER, //"root",
+					PASS//"password"
+			);// "password"の部分は，各自の環境に合わせて変更してください。
+
+			pstmt = con.prepareStatement(sql);
+			for (int i = 0; i < tokens.size(); i++) {
+				pstmt.setString(i + 1, tokens.get(i).getToken());
+			}
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				String pstingList = rs.getString("postings");
+				r.add(pstingList);
+
+			}
+			pstmt.close();
+			return r;
 
 		} catch (SQLException e) {
 			e.printStackTrace();

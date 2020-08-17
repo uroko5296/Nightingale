@@ -1,8 +1,7 @@
 package fts.searcher;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import fts.database.DBManager;
 import fts.database.DBManagerForMySQL;
@@ -31,6 +30,27 @@ public class RetrieverImpl implements Retriever {
 		}
 
 		if (sortedRecords_ == null) {
+			List<Integer> tokenIds1 = dbManager_.dbGetTokenIds(rawTokens_);
+
+			long s = System.currentTimeMillis();
+			List<Integer> tokenIds = dbManager_.dbGetTokenIds(rawTokens_);
+			long s1 = System.currentTimeMillis();
+			List<String> postingLists = dbManager_.dbGetPostingLists(rawTokens_);
+			long s2 = System.currentTimeMillis();
+
+			sortedRecords_ = new ArrayList<Record>();
+			for (int i = 0; i < rawTokens_.size(); i++) {
+				Record record = new RecordImpl(tokenIds.get(i), new PostingListImpl(postingLists.get(i)), i);
+				sortedRecords_.add(record);
+			}
+			long s3 = System.currentTimeMillis();
+
+			System.out.println("getSortedRecords etime:" + (s1 - s) + "[ms]");
+			System.out.println("getSortedRecords etime:" + (s2 - s1) + "[ms]");
+			System.out.println("getSortedRecords etime:" + (s3 - s2) + "[ms]");
+
+			/*
+			long s = System.currentTimeMillis();
 			int[] i = { 0 };
 			sortedRecords_ = rawTokens_.stream().map((Token token) -> {
 				return new RecordImpl(dbManager_.dbGetTokenId(token),
@@ -42,7 +62,11 @@ public class RetrieverImpl implements Retriever {
 					return r1.getPostingList().getDocsCount() - r2.getPostingList().getDocsCount();
 				}
 			}).collect(Collectors.toList());
+			long s1 = System.currentTimeMillis();
+			System.out.println("getSortedRecords etime:" + (s1 - s) + "[ms]");
+			*/
 		}
+
 		return sortedRecords_;
 	}
 
