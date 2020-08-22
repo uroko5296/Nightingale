@@ -1,7 +1,12 @@
 package fts.searcher;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.Sets;
 
 import fts.utils.Record;
 
@@ -20,6 +25,7 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 		if (candidateDocs_ == null) {
 			candidateDocs_ = searchDocs(sortedRecords_);
 		}
+		System.out.println("getCandidateDocs candidateDocs:" + candidateDocs_);
 		return candidateDocs_;
 	}
 
@@ -34,12 +40,30 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 	/*
 	 * フィルタとしてストリームで実装できる？？？？？？？
 	 */
-	private List<Integer> searchDocs(List<Record> sortedRecords) {
+	private List<Integer> searchDocs2(List<Record> recordList) {
+		if (recordList == null || recordList.size() < 1)
+			return new ArrayList<Integer>();
+
+		List<Set<Integer>> docIdsList = recordList.stream().map(r -> r.getPostingList().keySet())
+				.collect(Collectors.toList());
+
+		Set<Integer> docIds = new HashSet<Integer>();
+		docIds.addAll(docIdsList.get(0));
+		for (int i = 1; i < docIds.size(); i++) {
+			docIdsList.forEach(docIdSet -> Sets.intersection(docIds, docIdSet));
+		}
+		System.out.println("searchDocs2 docIds:" + docIds);
+
+		return docIds.stream().collect(Collectors.toList());
+
+	}
+
+	private List<Integer> searchDocs(List<Record> recordList) {
 		List<Integer> candidateDocIds = new ArrayList<Integer>();
-		if (sortedRecords == null)
+		if (recordList == null)
 			return candidateDocIds;
 
-		CandidateRecords candidateRecords = new CandidateRecords(sortedRecords);
+		CandidateRecords candidateRecords = new CandidateRecords(recordList);
 
 		while (candidateRecords.hasDocumentIdOf(0)) {
 			int docId = candidateRecords.getDocumentIdOf(0);
@@ -88,13 +112,13 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 
 	public class CandidateRecords {
 
-		List<Record> sortedRecords_;
+		List<Record> recordList_;
 		int[] cursors_;//各レコードのポスティングリストにおける未チェックの最小カーソル位置
 
-		public CandidateRecords(List<Record> sortedRecords) {
-			assert (sortedRecords_.size() > 0);
-			sortedRecords_ = sortedRecords;
-			cursors_ = new int[sortedRecords_.size()];//初期値はすべて0
+		public CandidateRecords(List<Record> recordList) {
+			assert (recordList_.size() > 0);
+			recordList_ = recordList;
+			cursors_ = new int[recordList_.size()];//初期値はすべて0
 		}
 
 		public int getRecordNum() {
@@ -102,7 +126,7 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 		}
 
 		public int tokenIdOf(int rId) {
-			return sortedRecords_.get(rId).getTokenId();
+			return recordList_.get(rId).getTokenId();
 		}
 
 		//rId番目のレコードから、現在のカーソルが指す位置の文書IDを取得する
@@ -112,7 +136,7 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 
 		//rId番目のレコードから、cur番目の位置の文書IDを取得する
 		public int getDocumentIdOfCursor(int rId, int cur) {
-			Record r = sortedRecords_.get(rId);
+			Record r = recordList_.get(rId);
 			return r.getDocumentIdOf(cur);
 		}
 
@@ -121,14 +145,12 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 		}
 
 		public boolean hasRecord(int rId) {
-			return rId < sortedRecords_.size();
+			return rId < recordList_.size();
 		}
 
 		public boolean hasDocumentIdOf(int rId) {
-			Record r = sortedRecords_.get(rId);
+			Record r = recordList_.get(rId);
 			return cursors_[rId] < r.getDocumentNum();
 		}
-
 	}
-
 }

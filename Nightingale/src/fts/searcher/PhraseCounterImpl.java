@@ -79,6 +79,7 @@ public class PhraseCounterImpl implements PhraseCounter {
 		if (docIds == null)
 			return map;
 
+		System.out.println("PhraseCounterImpl#docIdsToMap docIds:" + docIds);
 		docIds.forEach(docIdToCheck -> {
 
 			//フレーズサーチをするためのマップに追加する。
@@ -94,6 +95,7 @@ public class PhraseCounterImpl implements PhraseCounter {
 			map.put(docIdToCheck, tokenToPositions);
 
 		});
+		System.out.println("PhraseCounterImpl#docIdsToMap map:" + map);
 		return map;
 	}
 
@@ -114,6 +116,7 @@ public class PhraseCounterImpl implements PhraseCounter {
 		int[] cursors = new int[map_.get(docIdToCheck).keySet().size()];
 
 		while (cursors[0] < positionLists.get(tokens_[0]).size()) {
+
 			int relPosition = positionLists.get(tokens_[0]).get(cursors[0]) - bases_[0];
 			int nextRelPosition = relPosition;
 			for (int i = 1; i < cursors.length; i++) {
@@ -122,6 +125,7 @@ public class PhraseCounterImpl implements PhraseCounter {
 						&& positionList.get(cursors[i]) - bases_[i] < relPosition) {
 					cursors[i] = cursors[i] + 1;
 				}
+
 				if (cursors[i] >= positionList.size()) {
 					return phraseCount;//i番目のレコードにおいてポスティングリスト(文書IDがdocuIdToCheckのもの）を見終えた。
 				}
@@ -142,7 +146,6 @@ public class PhraseCounterImpl implements PhraseCounter {
 				cursors[0] = cursors[0] + 1;
 			}
 		}
-
 		return phraseCount;
 	}
 

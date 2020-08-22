@@ -504,9 +504,11 @@ public class DBManagerForMySQL implements DBManager {
 		return null;
 	}
 
-	private final String sqlSelectPostings1 = "SELECT postings FROM " + TOKENS + " WHERE token IN (";
+	private final String sqlSelectPostings1 = "SELECT token,postings FROM " + TOKENS + " WHERE token IN(";
 	private final String sqlSelectPostings2 = "?,";
-	private final String sqlSelectPostings3 = ");";
+	private final String sqlSelectPostings3 = ") ORDER BY FIELD (token,";
+	private final String sqlSelectPostings4 = "?,";
+	private final String sqlSelectPostings5 = ");";
 
 	@Override
 	public List<String> dbGetPostingLists(List<Token> tokens) {
@@ -525,6 +527,12 @@ public class DBManagerForMySQL implements DBManager {
 		sql = sql.substring(0, sql.length() - 1);
 		sql = sql + sqlSelectPostings3;
 
+		for (int i = 0; i < tokens.size(); i++) {
+			sql = sql + sqlSelectPostings4;
+		}
+		sql = sql.substring(0, sql.length() - 1);
+		sql = sql + sqlSelectPostings5;
+		System.out.println("dbGetPostingLists sql:" + sql);
 		List<String> r = new ArrayList<String>();
 
 		try {
@@ -539,6 +547,8 @@ public class DBManagerForMySQL implements DBManager {
 			pstmt = con.prepareStatement(sql);
 			for (int i = 0; i < tokens.size(); i++) {
 				pstmt.setString(i + 1, tokens.get(i).getToken());
+				pstmt.setString((i + tokens.size()) + 1, tokens.get(i).getToken());
+				System.out.println("dbGetPostingLists pstmt:" + tokens.get(i).getToken());
 			}
 
 			rs = pstmt.executeQuery();
@@ -546,7 +556,7 @@ public class DBManagerForMySQL implements DBManager {
 			while (rs.next()) {
 				String pstingList = rs.getString("postings");
 				r.add(pstingList);
-
+				System.out.println("dbGetPostingLists pstingList:" + pstingList);
 			}
 			pstmt.close();
 			return r;

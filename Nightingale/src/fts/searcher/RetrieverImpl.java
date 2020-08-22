@@ -2,6 +2,7 @@ package fts.searcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fts.database.DBManager;
 import fts.database.DBManagerForMySQL;
@@ -12,7 +13,7 @@ import fts.utils.Token;
 
 public class RetrieverImpl implements Retriever {
 
-	List<Token> rawTokens_;
+	List<Token> sortedTokens_;
 
 	DBManager dbManager_;
 
@@ -20,7 +21,7 @@ public class RetrieverImpl implements Retriever {
 
 	public RetrieverImpl(List<Token> rawTokens) {
 
-		rawTokens_ = rawTokens;
+		sortedTokens_ = rawTokens;//.stream().sorted().collect(Collectors.toList());
 	}
 
 	@Override
@@ -30,16 +31,19 @@ public class RetrieverImpl implements Retriever {
 		}
 
 		if (sortedRecords_ == null) {
-			List<Integer> tokenIds1 = dbManager_.dbGetTokenIds(rawTokens_);
-
 			long s = System.currentTimeMillis();
-			List<Integer> tokenIds = dbManager_.dbGetTokenIds(rawTokens_);
+			List<Integer> tokenIds = dbManager_.dbGetTokenIds(sortedTokens_).stream().sorted()
+					.collect(Collectors.toList());
+			System.out.println("tokenIds:" + tokenIds);
 			long s1 = System.currentTimeMillis();
-			List<String> postingLists = dbManager_.dbGetPostingLists(rawTokens_);
+			List<String> postingLists = dbManager_
+					.dbGetPostingLists(sortedTokens_);
+			//List<String> postingLists2 = rawTokens_.stream().map(t -> dbManager_.dbGetPostingList(t))
+			//		.collect(Collectors.toList());
 			long s2 = System.currentTimeMillis();
 
 			sortedRecords_ = new ArrayList<Record>();
-			for (int i = 0; i < rawTokens_.size(); i++) {
+			for (int i = 0; i < sortedTokens_.size(); i++) {
 				Record record = new RecordImpl(tokenIds.get(i), new PostingListImpl(postingLists.get(i)), i);
 				sortedRecords_.add(record);
 			}

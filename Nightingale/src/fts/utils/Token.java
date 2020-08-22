@@ -1,6 +1,6 @@
 package fts.utils;
 
-public class Token {
+public class Token implements Comparable<Token> {
 
 	private final String token_;
 
@@ -43,5 +43,14 @@ public class Token {
 	@Override
 	public String toString() {
 		return "t{" + token_ + "}";
+	}
+
+	@Override
+	public int compareTo(Token o) {
+		if (o == null) {
+			// 引数が null の場合、比較する必要なし。
+			throw new NullPointerException();
+		}
+		return this.token_.compareTo(o.getToken());
 	}
 }
