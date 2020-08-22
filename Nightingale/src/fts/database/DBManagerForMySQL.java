@@ -391,7 +391,8 @@ public class DBManagerForMySQL implements DBManager {
 		}
 
 		String sql = sqlInsertPListMapOnDuplicateKeyUpdate1;
-		for (Token token : postingListMap.keySet()) {
+		for (@SuppressWarnings("unused")
+		Token token : postingListMap.keySet()) {
 			sql = sql + " " + sqlInsertPListMapOnDuplicateKeyUpdate2;
 		}
 		sql = sql.substring(0, sql.length() - 1);
@@ -532,7 +533,6 @@ public class DBManagerForMySQL implements DBManager {
 		}
 		sql = sql.substring(0, sql.length() - 1);
 		sql = sql + sqlSelectPostings5;
-		System.out.println("dbGetPostingLists sql:" + sql);
 		List<String> r = new ArrayList<String>();
 
 		try {
@@ -548,7 +548,6 @@ public class DBManagerForMySQL implements DBManager {
 			for (int i = 0; i < tokens.size(); i++) {
 				pstmt.setString(i + 1, tokens.get(i).getToken());
 				pstmt.setString((i + tokens.size()) + 1, tokens.get(i).getToken());
-				System.out.println("dbGetPostingLists pstmt:" + tokens.get(i).getToken());
 			}
 
 			rs = pstmt.executeQuery();
@@ -556,7 +555,6 @@ public class DBManagerForMySQL implements DBManager {
 			while (rs.next()) {
 				String pstingList = rs.getString("postings");
 				r.add(pstingList);
-				System.out.println("dbGetPostingLists pstingList:" + pstingList);
 			}
 			pstmt.close();
 			return r;

@@ -79,7 +79,6 @@ public class PhraseCounterImpl implements PhraseCounter {
 		if (docIds == null)
 			return map;
 
-		System.out.println("PhraseCounterImpl#docIdsToMap docIds:" + docIds);
 		docIds.forEach(docIdToCheck -> {
 
 			//フレーズサーチをするためのマップに追加する。
@@ -95,7 +94,6 @@ public class PhraseCounterImpl implements PhraseCounter {
 			map.put(docIdToCheck, tokenToPositions);
 
 		});
-		System.out.println("PhraseCounterImpl#docIdsToMap map:" + map);
 		return map;
 	}
 

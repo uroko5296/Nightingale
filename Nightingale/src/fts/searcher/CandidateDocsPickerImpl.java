@@ -25,7 +25,6 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 		if (candidateDocs_ == null) {
 			candidateDocs_ = searchDocs(sortedRecords_);
 		}
-		System.out.println("getCandidateDocs candidateDocs:" + candidateDocs_);
 		return candidateDocs_;
 	}
 

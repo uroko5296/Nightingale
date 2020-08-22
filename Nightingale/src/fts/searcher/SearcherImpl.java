@@ -64,15 +64,12 @@ public class SearcherImpl implements Searcher {
 		if (phraseCounts_ == null) {
 			PhraseCounter checker = new PhraseCounterImpl(sortedRecords_, candidateDocs_);
 			phraseCounts_ = checker.phraseCheck();
-			System.out.println("SearcherImpl#search	phraseCounts_:" + phraseCounts_);
 		}
 
 		if (tfIdfs_ == null) {
 			Calculator evaluator = new CalculatorForTfIdf(tokenizer_, phraseCounts_, tokenList_.size());
 			tfIdfs_ = evaluator.calculate();
 		}
-
-		System.out.println("SearcherImpl#search	tfIdfs:" + tfIdfs_.toString());
 
 		if (searchResult_ == null) {
 			searchResult_ = generateSearchResult(tfIdfs_);
