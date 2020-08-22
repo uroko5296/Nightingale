@@ -23,7 +23,7 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 	@Override
 	public List<Integer> getCandidateDocs() {
 		if (candidateDocs_ == null) {
-			candidateDocs_ = searchDocs(sortedRecords_);
+			candidateDocs_ = searchDocs2(sortedRecords_);
 		}
 		return candidateDocs_;
 	}
@@ -48,8 +48,8 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 
 		Set<Integer> docIds = new HashSet<Integer>();
 		docIds.addAll(docIdsList.get(0));
-		for (int i = 1; i < docIds.size(); i++) {
-			docIdsList.forEach(docIdSet -> Sets.intersection(docIds, docIdSet));
+		for (int i = 1; i < docIdsList.size(); i++) {
+			docIds = Sets.intersection(docIds, docIdsList.get(i));
 		}
 		System.out.println("searchDocs2 docIds:" + docIds);
 
@@ -104,7 +104,7 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 				candidateRecords.incrementCursor(0);
 			}
 		}
-
+		System.out.println("searchDocs1 docIds:" + candidateDocIds);
 		return candidateDocIds;
 
 	}
