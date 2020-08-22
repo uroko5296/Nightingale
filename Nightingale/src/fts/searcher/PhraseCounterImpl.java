@@ -74,8 +74,7 @@ public class PhraseCounterImpl implements PhraseCounter {
 			}
 		}
 
-		if (map_ == null) {
-			//map_ = docIdsToMap(candidateDocs_, tRecords_);
+		if (phraseCounts_ == null) {
 			phraseCounts_ = makePhraseCounts(candidateDocs_, postingListList_);
 		}
 
@@ -115,82 +114,6 @@ public class PhraseCounterImpl implements PhraseCounter {
 		});
 		return phraseCounts;
 
-	}
-
-	private Map<Integer, Map<Integer, List<Integer>>> docIdsToMap(
-			List<Integer> docIds,
-			List<TRecord> tRecords) {
-
-		Map<Integer, Map<Integer, List<Integer>>> map = new HashMap<Integer, Map<Integer, List<Integer>>>();
-		if (docIds == null)
-			return map;
-
-		docIds.forEach(docIdToCheck -> {
-
-			//フレーズサーチをするためのマップに追加する。
-			Map<Integer, List<Integer>> tokenToPositions = new HashMap<Integer, List<Integer>>();
-			//レコードすなわちトークンについてループを回す
-			for (int i = 0; i < tRecords.size(); i++) {
-				List<Integer> postingList = postingListList_.get(i).get(docIdToCheck).stream()
-						.collect(Collectors.toList());
-
-				int tokenId = tRecords.get(i).getTokenId();
-				tokenToPositions.put(tokenId, postingList);
-			}
-			map.put(docIdToCheck, tokenToPositions);
-
-		});
-		return map;
-	}
-
-	/*
-	 * ポスティングリストが文書IDの次に「出現位置で」ソートされている必要があるのはこの関数のためである。
-	 */
-	/*
-	 * phraseCount
-	 */
-	private int searchPhrase(int docIdToCheck) {
-
-		int phraseCount = 0;
-
-		//トークンID⇒ポジションリスト
-		Map<Integer, List<Integer>> positionLists = map_.get(docIdToCheck);
-
-		//初期値はすべて０
-		int[] cursors = new int[map_.get(docIdToCheck).keySet().size()];
-
-		while (cursors[0] < positionLists.get(tokens_[0]).size()) {
-
-			int relPosition = positionLists.get(tokens_[0]).get(cursors[0]) - bases_[0];
-			int nextRelPosition = relPosition;
-			for (int i = 1; i < cursors.length; i++) {
-				List<Integer> positionList = positionLists.get(tokens_[i]);
-				while (cursors[i] < positionList.size()
-						&& positionList.get(cursors[i]) - bases_[i] < relPosition) {
-					cursors[i] = cursors[i] + 1;
-				}
-
-				if (cursors[i] >= positionList.size()) {
-					return phraseCount;//i番目のレコードにおいてポスティングリスト(文書IDがdocuIdToCheckのもの）を見終えた。
-				}
-				if (positionList.get(cursors[i]) - bases_[i] > relPosition) {
-					nextRelPosition = positionList.get(cursors[i]) - bases_[i];
-					break;//他の候補は見ずに抜ける。
-				}
-			}
-
-			if (nextRelPosition > relPosition) {
-				while (cursors[0] < positionLists.get(tokens_[0]).size()
-						&& positionLists.get(tokens_[0]).get(cursors[0]) - bases_[0] < nextRelPosition) {
-					cursors[0] = cursors[0] + 1;
-				}
-			} else {
-				//フレーズが一致
-				phraseCount++;
-				cursors[0] = cursors[0] + 1;
-			}
-		}
-		return phraseCount;
 	}
 
 }
