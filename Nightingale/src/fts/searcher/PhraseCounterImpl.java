@@ -1,9 +1,15 @@
 package fts.searcher;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Sets;
 
 import fts.database.DBManager.TRecord;
 import fts.utils.PostingList;
@@ -67,21 +73,48 @@ public class PhraseCounterImpl implements PhraseCounter {
 				bases_[i] = i;
 			}
 		}
-		if (tokens_.length != bases_.length) {
-			throw new IllegalArgumentException("Illegal array length!");
-		}
 
 		if (map_ == null) {
-			map_ = docIdsToMap(candidateDocs_, tRecords_);
+			//map_ = docIdsToMap(candidateDocs_, tRecords_);
+			phraseCounts_ = makePhraseCounts(candidateDocs_, postingListList_);
 		}
 
-		if (phraseCounts_ == null) {
-			phraseCounts_ = new HashMap<Integer, Integer>();
-			candidateDocs_.forEach(d -> {
-				phraseCounts_.put(d, searchPhrase(d));
-			});
-		}
 		return phraseCounts_;
+	}
+
+	/*
+	 * postingListListの並び順はクエリにあるままのトークン順である前提である
+	 */
+	private Map<Integer, Integer> makePhraseCounts(List<Integer> docIds, List<PostingList> postingListList) {
+		Map<Integer, Integer> phraseCounts = new HashMap<Integer, Integer>();
+
+		docIds.forEach(docIdToCheck -> {
+			List<SortedSet<Integer>> positionSetList = postingListList.stream().map(pl -> pl.get(docIdToCheck))
+					.collect(Collectors.toList());
+			List<HashSet<Integer>> rebasedPositionSetList = new ArrayList<HashSet<Integer>>();//ここでListを生成する必要はない１
+			for (int i = 0; i < positionSetList.size(); i++) {
+				HashSet<Integer> newSet = new HashSet<Integer>();
+				SortedSet<Integer> oldSet = positionSetList.get(i);
+				int base = i;
+				oldSet.forEach(pos -> newSet.add(pos - base));
+				rebasedPositionSetList.add(newSet);//ここでListを生成する必要はない２
+			}
+
+			if (rebasedPositionSetList.isEmpty()) {
+				phraseCounts.put(docIdToCheck, 0);
+			} else {
+
+				Set<Integer> iSet = rebasedPositionSetList.get(0);
+				if (rebasedPositionSetList.size() > 1) {
+					for (int j = 1; j < rebasedPositionSetList.size(); j++) {
+						iSet = Sets.intersection(iSet, rebasedPositionSetList.get(j));
+					}
+				}
+				phraseCounts.put(docIdToCheck, iSet.size());
+			}
+		});
+		return phraseCounts;
+
 	}
 
 	private Map<Integer, Map<Integer, List<Integer>>> docIdsToMap(
