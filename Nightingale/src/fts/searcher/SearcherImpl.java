@@ -3,7 +3,6 @@ package fts.searcher;
 import java.util.List;
 import java.util.Map;
 
-import fts.database.DBManager.TRecord;
 import fts.searcher.Calculator.CalcResult;
 import fts.tokenizer.Tokenizer;
 import fts.utils.PostingList;
@@ -18,7 +17,6 @@ public class SearcherImpl implements Searcher {
 	List<PostingList> postingListList_;
 	List<Record> sortedRecords_;
 
-	List<TRecord> tRecords_;
 	int resultNum_ = -1;
 
 	/*
@@ -59,7 +57,6 @@ public class SearcherImpl implements Searcher {
 		if (postingListList_ == null) {
 			Retriever retriever = new RetrieverImpl(tokenList_);
 			postingListList_ = retriever.getPostingListList();
-			tRecords_ = retriever.getRecordList();
 		}
 
 		if (candidateDocs_ == null) {
@@ -68,7 +65,7 @@ public class SearcherImpl implements Searcher {
 		}
 
 		if (phraseCounts_ == null) {
-			PhraseCounter checker = new PhraseCounterImpl(tokenList_, tRecords_, postingListList_, candidateDocs_);
+			PhraseCounter checker = new PhraseCounterImpl(tokenList_, postingListList_, candidateDocs_);
 			phraseCounts_ = checker.phraseCheck();
 		}
 
