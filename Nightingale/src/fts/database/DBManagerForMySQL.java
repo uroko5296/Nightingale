@@ -587,6 +587,94 @@ public class DBManagerForMySQL implements DBManager {
 		return null;
 	}
 
+	/*
+	 * Recordとは、tokenIdとpostingListのタプルである。
+	 */
+	private final String sqlSelectRecord1 = "SELECT id,token,postings FROM " + TOKENS + " WHERE token IN(";
+	private final String sqlSelectRecord2 = "?,";
+	private final String sqlSelectRecord3 = ") ORDER BY FIELD (token,";
+	private final String sqlSelectRecord4 = "?,";
+	private final String sqlSelectRecord5 = ");";
+
+	@Override
+	public List<TRecord> dbGetRecordLists(List<Token> tokens) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		if (tokens == null || tokens.size() < 1) {
+			throw new IllegalArgumentException("empty set!");
+		}
+
+		String sql = sqlSelectRecord1;
+		for (int i = 0; i < tokens.size(); i++) {
+			sql = sql + sqlSelectRecord2;
+		}
+		sql = sql.substring(0, sql.length() - 1);
+		sql = sql + sqlSelectRecord3;
+
+		for (int i = 0; i < tokens.size(); i++) {
+			sql = sql + sqlSelectRecord4;
+		}
+		sql = sql.substring(0, sql.length() - 1);
+		sql = sql + sqlSelectRecord5;
+		List<TRecord> r = new ArrayList<TRecord>();
+
+		try {
+
+			String url = connectionURL();
+			con = DriverManager.getConnection(
+					url, //タイムゾーンを指定しないとなぜかエラーが出る。
+					USER, //"root",
+					PASS//"password"
+			);// "password"の部分は，各自の環境に合わせて変更してください。
+
+			pstmt = con.prepareStatement(sql);
+			for (int i = 0; i < tokens.size(); i++) {
+				pstmt.setString(i + 1, tokens.get(i).getToken());
+				pstmt.setString((i + tokens.size()) + 1, tokens.get(i).getToken());
+			}
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				int tokenId = rs.getInt("id");
+				String postingList = rs.getString("postings");
+
+				TRecord record = new TRecord(tokenId, postingList);
+				r.add(record);
+			}
+			pstmt.close();
+			return r;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
 	private final String sqlSelectBodyOfDocumentsIdById = "SELECT body FROM " + DOCUMENTS + " WHERE id=?;";
 
 	@Override

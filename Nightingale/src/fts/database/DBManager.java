@@ -25,6 +25,25 @@ import fts.utils.Token;
 
 public interface DBManager {
 
+	class TRecord {
+		private int tokenId_;
+		private String postingList_;
+
+		TRecord(int t, String p) {
+			tokenId_ = t;
+			postingList_ = p;
+		}
+
+		public int getTokenId() {
+			return tokenId_;
+		}
+
+		public String getPostingList() {
+			return postingList_;
+		}
+
+	}
+
 	public int dbGetDocumentIdAndAddDocumentIfNotExists(Document document, int bodySize);
 
 	public void dbAddDocument(Document document, int bodySize);//いる？
@@ -58,6 +77,8 @@ public interface DBManager {
 	public String dbGetPostingList(Token token);//いる？サーチの時に使う？
 
 	public List<String> dbGetPostingLists(List<Token> tokens);//いる？サーチの時に使う？
+
+	public List<TRecord> dbGetRecordLists(List<Token> tokens);//いる？サーチの時に使う？
 
 	public int getTotalDocumentNum();
 

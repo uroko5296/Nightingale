@@ -3,6 +3,7 @@ package fts.searcher;
 import java.util.List;
 import java.util.Map;
 
+import fts.database.DBManager.TRecord;
 import fts.searcher.Calculator.CalcResult;
 import fts.tokenizer.Tokenizer;
 import fts.utils.PostingList;
@@ -14,8 +15,10 @@ public class SearcherImpl implements Searcher {
 	Tokenizer tokenizer_;//コンストラクタで受け取る。
 
 	List<Token> tokenList_;
-	List<PostingList> postingListList;
+	List<PostingList> postingListList_;
 	List<Record> sortedRecords_;
+
+	List<TRecord> tRecords_;
 	int resultNum_ = -1;
 
 	/*
@@ -53,19 +56,19 @@ public class SearcherImpl implements Searcher {
 			tokenList_ = tokenizer_.parseAll(query);
 		}
 
-		if (postingListList == null) {
+		if (postingListList_ == null) {
 			Retriever retriever = new RetrieverImpl(tokenList_);
-			postingListList = retriever.getPostingListList();
-			sortedRecords_ = retriever.getSortedRecords();
+			postingListList_ = retriever.getPostingListList();
+			tRecords_ = retriever.getRecordList();
 		}
 
 		if (candidateDocs_ == null) {
-			CandidateDocsPicker picker = new CandidateDocsPickerImpl(postingListList);
+			CandidateDocsPicker picker = new CandidateDocsPickerImpl(postingListList_);
 			candidateDocs_ = picker.getCandidateDocs();
 		}
 
 		if (phraseCounts_ == null) {
-			PhraseCounter checker = new PhraseCounterImpl(sortedRecords_, candidateDocs_);
+			PhraseCounter checker = new PhraseCounterImpl(tokenList_, tRecords_, postingListList_, candidateDocs_);
 			phraseCounts_ = checker.phraseCheck();
 		}
 

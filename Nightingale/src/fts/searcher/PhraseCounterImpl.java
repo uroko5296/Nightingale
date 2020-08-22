@@ -5,11 +5,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import fts.utils.Record;
+import fts.database.DBManager.TRecord;
+import fts.utils.PostingList;
+import fts.utils.Token;
 
 public class PhraseCounterImpl implements PhraseCounter {
 
-	List<Record> sortedRecords_;
+	List<TRecord> tRecords_;
+
+	List<Token> tokenList_;
+
+	List<PostingList> postingListList_;
 	/*
 	 * candidateDocs_：
 	 * 候補となる文献IDのリスト。
@@ -40,26 +46,33 @@ public class PhraseCounterImpl implements PhraseCounter {
 
 	//.reduce((acc, t) -> acc.addAll(t.keySet())
 	public PhraseCounterImpl(
-			List<Record> sortedRecords,
+			List<Token> tokenList,
+			List<TRecord> tRecords,
+			List<PostingList> postingListList,
 			List<Integer> candidateDocs) {
-		sortedRecords_ = sortedRecords;
+		tokenList_ = tokenList;
+		tRecords_ = tRecords;
+		postingListList_ = postingListList;
 		candidateDocs_ = candidateDocs;
 	}
 
 	@Override
 	public Map<Integer, Integer> phraseCheck() {
 		if (tokens_ == null) {
-			tokens_ = sortedRecords_.stream().map(r -> r.getTokenId()).mapToInt(t -> t).toArray();
+			tokens_ = tRecords_.stream().map(r -> r.getTokenId()).mapToInt(t -> t).toArray();
 		}
 		if (bases_ == null) {
-			bases_ = sortedRecords_.stream().map(r -> r.getPositionInQuery()).mapToInt(t -> t).toArray();
+			bases_ = new int[tRecords_.size()];
+			for (int i = 0; i < bases_.length; i++) {
+				bases_[i] = i;
+			}
 		}
 		if (tokens_.length != bases_.length) {
 			throw new IllegalArgumentException("Illegal array length!");
 		}
 
 		if (map_ == null) {
-			map_ = docIdsToMap(candidateDocs_, sortedRecords_);
+			map_ = docIdsToMap(candidateDocs_, tRecords_);
 		}
 
 		if (phraseCounts_ == null) {
@@ -73,7 +86,7 @@ public class PhraseCounterImpl implements PhraseCounter {
 
 	private Map<Integer, Map<Integer, List<Integer>>> docIdsToMap(
 			List<Integer> docIds,
-			List<Record> sortedRecords) {
+			List<TRecord> tRecords) {
 
 		Map<Integer, Map<Integer, List<Integer>>> map = new HashMap<Integer, Map<Integer, List<Integer>>>();
 		if (docIds == null)
@@ -84,11 +97,11 @@ public class PhraseCounterImpl implements PhraseCounter {
 			//フレーズサーチをするためのマップに追加する。
 			Map<Integer, List<Integer>> tokenToPositions = new HashMap<Integer, List<Integer>>();
 			//レコードすなわちトークンについてループを回す
-			for (int i = 0; i < sortedRecords.size(); i++) {
-				List<Integer> postingList = sortedRecords.get(i).getPostingList().get(docIdToCheck).stream()
+			for (int i = 0; i < tRecords.size(); i++) {
+				List<Integer> postingList = postingListList_.get(i).get(docIdToCheck).stream()
 						.collect(Collectors.toList());
 
-				int tokenId = sortedRecords.get(i).getTokenId();
+				int tokenId = tRecords.get(i).getTokenId();
 				tokenToPositions.put(tokenId, postingList);
 			}
 			map.put(docIdToCheck, tokenToPositions);

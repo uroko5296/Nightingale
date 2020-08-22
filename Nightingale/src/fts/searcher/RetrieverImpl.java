@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fts.database.DBManager;
+import fts.database.DBManager.TRecord;
 import fts.database.DBManagerForMySQL;
 import fts.utils.PostingList;
 import fts.utils.PostingListImpl;
@@ -18,7 +19,7 @@ public class RetrieverImpl implements Retriever {
 
 	DBManager dbManager_;
 
-	List<Record> sortedRecords_;
+	List<TRecord> recordList_;
 
 	List<PostingList> postingListList_;
 
@@ -28,28 +29,17 @@ public class RetrieverImpl implements Retriever {
 	}
 
 	@Override
-	public List<Record> getSortedRecords() {
+	public List<TRecord> getRecordList() {
 		if (dbManager_ == null) {
 			dbManager_ = new DBManagerForMySQL();
 		}
 
-		if (sortedRecords_ == null) {
+		if (recordList_ == null) {
 			long s = System.currentTimeMillis();
-			List<Integer> tokenIds = dbManager_.dbGetTokenIds(tokenList_).stream().sorted()
-					.collect(Collectors.toList());
 			long s1 = System.currentTimeMillis();
-			List<String> postingLists = dbManager_
-					.dbGetPostingLists(tokenList_);
+			recordList_ = dbManager_.dbGetRecordLists(tokenList_);
 			long s2 = System.currentTimeMillis();
 
-			sortedRecords_ = new ArrayList<Record>();
-			postingListList_ = new ArrayList<PostingList>();
-			for (int i = 0; i < tokenList_.size(); i++) {
-				PostingList p = new PostingListImpl(postingLists.get(i));
-				Record record = new RecordImpl(tokenIds.get(i), p, i);
-				sortedRecords_.add(record);
-				postingListList_.add(p);
-			}
 			long s3 = System.currentTimeMillis();
 
 			System.out.println("getSortedRecords etime:" + (s1 - s) + "[ms]");
@@ -58,7 +48,7 @@ public class RetrieverImpl implements Retriever {
 
 		}
 
-		return sortedRecords_;
+		return recordList_;
 	}
 
 	@Override
@@ -76,12 +66,10 @@ public class RetrieverImpl implements Retriever {
 					.dbGetPostingLists(tokenList_);
 			long s2 = System.currentTimeMillis();
 
-			sortedRecords_ = new ArrayList<Record>();
 			postingListList_ = new ArrayList<PostingList>();
 			for (int i = 0; i < tokenList_.size(); i++) {
 				PostingList p = new PostingListImpl(postingLists.get(i));
 				Record record = new RecordImpl(tokenIds.get(i), p, i);
-				sortedRecords_.add(record);
 				postingListList_.add(p);
 			}
 			long s3 = System.currentTimeMillis();

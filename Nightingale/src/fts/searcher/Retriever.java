@@ -2,8 +2,8 @@ package fts.searcher;
 
 import java.util.List;
 
+import fts.database.DBManager.TRecord;
 import fts.utils.PostingList;
-import fts.utils.Record;
 
 public interface Retriever {
 
@@ -14,7 +14,7 @@ public interface Retriever {
 	 * Searcherがサーチをするためのデータ構造を構築するFactory的なクラスでもある。
 	 */
 
-	List<Record> getSortedRecords();
+	List<TRecord> getRecordList();
 
 	List<PostingList> getPostingListList();
 
