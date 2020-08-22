@@ -6,7 +6,6 @@ import java.util.Map;
 import fts.searcher.Calculator.CalcResult;
 import fts.tokenizer.Tokenizer;
 import fts.utils.PostingList;
-import fts.utils.Record;
 import fts.utils.Token;
 
 public class SearcherImpl implements Searcher {
@@ -15,7 +14,6 @@ public class SearcherImpl implements Searcher {
 
 	List<Token> tokenList_;
 	List<PostingList> postingListList_;
-	List<Record> sortedRecords_;
 
 	int resultNum_ = -1;
 

@@ -9,8 +9,6 @@ import fts.database.DBManager.TRecord;
 import fts.database.DBManagerForMySQL;
 import fts.utils.PostingList;
 import fts.utils.PostingListImpl;
-import fts.utils.Record;
-import fts.utils.RecordImpl;
 import fts.utils.Token;
 
 public class RetrieverImpl implements Retriever {
@@ -69,7 +67,6 @@ public class RetrieverImpl implements Retriever {
 			postingListList_ = new ArrayList<PostingList>();
 			for (int i = 0; i < tokenList_.size(); i++) {
 				PostingList p = new PostingListImpl(postingLists.get(i));
-				Record record = new RecordImpl(tokenIds.get(i), p, i);
 				postingListList_.add(p);
 			}
 			long s3 = System.currentTimeMillis();
