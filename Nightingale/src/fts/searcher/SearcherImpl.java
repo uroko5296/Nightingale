@@ -5,6 +5,7 @@ import java.util.Map;
 
 import fts.searcher.Calculator.CalcResult;
 import fts.tokenizer.Tokenizer;
+import fts.utils.PostingList;
 import fts.utils.Record;
 import fts.utils.Token;
 
@@ -13,6 +14,7 @@ public class SearcherImpl implements Searcher {
 	Tokenizer tokenizer_;//コンストラクタで受け取る。
 
 	List<Token> tokenList_;
+	List<PostingList> postingListList;
 	List<Record> sortedRecords_;
 	int resultNum_ = -1;
 
@@ -51,13 +53,14 @@ public class SearcherImpl implements Searcher {
 			tokenList_ = tokenizer_.parseAll(query);
 		}
 
-		if (sortedRecords_ == null) {
+		if (postingListList == null) {
 			Retriever retriever = new RetrieverImpl(tokenList_);
+			postingListList = retriever.getPostingListList();
 			sortedRecords_ = retriever.getSortedRecords();
 		}
 
 		if (candidateDocs_ == null) {
-			CandidateDocsPicker picker = new CandidateDocsPickerImpl(sortedRecords_);
+			CandidateDocsPicker picker = new CandidateDocsPickerImpl(postingListList);
 			candidateDocs_ = picker.getCandidateDocs();
 		}
 

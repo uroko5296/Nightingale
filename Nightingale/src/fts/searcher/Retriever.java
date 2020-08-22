@@ -2,6 +2,7 @@ package fts.searcher;
 
 import java.util.List;
 
+import fts.utils.PostingList;
 import fts.utils.Record;
 
 public interface Retriever {
@@ -14,5 +15,7 @@ public interface Retriever {
 	 */
 
 	List<Record> getSortedRecords();
+
+	List<PostingList> getPostingListList();
 
 }
