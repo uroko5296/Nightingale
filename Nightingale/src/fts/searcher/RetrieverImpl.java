@@ -2,7 +2,6 @@ package fts.searcher;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import fts.database.DBManager;
 import fts.database.DBManager.TRecord;
@@ -27,29 +26,6 @@ public class RetrieverImpl implements Retriever {
 	}
 
 	@Override
-	public List<TRecord> getRecordList() {
-		if (dbManager_ == null) {
-			dbManager_ = new DBManagerForMySQL();
-		}
-
-		if (recordList_ == null) {
-			long s = System.currentTimeMillis();
-			long s1 = System.currentTimeMillis();
-			recordList_ = dbManager_.dbGetRecordLists(tokenList_);
-			long s2 = System.currentTimeMillis();
-
-			long s3 = System.currentTimeMillis();
-
-			System.out.println("getSortedRecords etime:" + (s1 - s) + "[ms]");
-			System.out.println("getSortedRecords etime:" + (s2 - s1) + "[ms]");
-			System.out.println("getSortedRecords etime:" + (s3 - s2) + "[ms]");
-
-		}
-
-		return recordList_;
-	}
-
-	@Override
 	public List<PostingList> getPostingListList() {
 		if (dbManager_ == null) {
 			dbManager_ = new DBManagerForMySQL();
@@ -57,8 +33,6 @@ public class RetrieverImpl implements Retriever {
 
 		if (postingListList_ == null) {
 			long s = System.currentTimeMillis();
-			List<Integer> tokenIds = dbManager_.dbGetTokenIds(tokenList_).stream().sorted()
-					.collect(Collectors.toList());
 			long s1 = System.currentTimeMillis();
 			List<String> postingLists = dbManager_
 					.dbGetPostingLists(tokenList_);
@@ -71,9 +45,9 @@ public class RetrieverImpl implements Retriever {
 			}
 			long s3 = System.currentTimeMillis();
 
-			System.out.println("getSortedRecords etime:" + (s1 - s) + "[ms]");
-			System.out.println("getSortedRecords etime:" + (s2 - s1) + "[ms]");
-			System.out.println("getSortedRecords etime:" + (s3 - s2) + "[ms]");
+			System.out.println("getSortedRecords etime1:" + (s1 - s) + "[ms]");
+			System.out.println("getSortedRecords etime2:" + (s2 - s1) + "[ms]");
+			System.out.println("getSortedRecords etime3:" + (s3 - s2) + "[ms]");
 
 		}
 

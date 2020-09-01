@@ -47,33 +47,43 @@ public class SearcherImpl implements Searcher {
 
 	@Override
 	public SearchResult search(String query, int n) {
+		long t0 = System.currentTimeMillis();
 		if (tokenList_ == null) {
 			tokenList_ = tokenizer_.parseAll(query);
 		}
 
+		long t1 = System.currentTimeMillis();
 		if (postingListList_ == null) {
 			Retriever retriever = new RetrieverImpl(tokenList_);
 			postingListList_ = retriever.getPostingListList();
 		}
+		long t2 = System.currentTimeMillis();
 
 		if (candidateDocs_ == null) {
 			CandidateDocsPicker picker = new CandidateDocsPickerImpl(postingListList_);
 			candidateDocs_ = picker.getCandidateDocs();
 		}
-
+		long t3 = System.currentTimeMillis();
 		if (phraseCounts_ == null) {
 			PhraseCounter checker = new PhraseCounterImpl(tokenList_, postingListList_, candidateDocs_);
 			phraseCounts_ = checker.phraseCheck();
 		}
-
+		long t4 = System.currentTimeMillis();
 		if (tfIdfs_ == null) {
-			Calculator evaluator = new CalculatorForTfIdf(tokenizer_, phraseCounts_, tokenList_.size());
-			tfIdfs_ = evaluator.calculate();
+			Calculator calculator = new CalculatorForTfIdf(tokenizer_, phraseCounts_, tokenList_.size());
+			tfIdfs_ = calculator.calculate();
 		}
-
+		long t5 = System.currentTimeMillis();
 		if (searchResult_ == null) {
 			searchResult_ = generateSearchResult(tfIdfs_);
 		}
+
+		System.out.println("SearcherImpl#search T0:" + (t1 - t0) + "[ms]");
+		System.out.println("SearcherImpl#search T1:" + (t2 - t1) + "[ms]");
+		System.out.println("SearcherImpl#search T2:" + (t3 - t2) + "[ms]");
+		System.out.println("SearcherImpl#search T3:" + (t4 - t3) + "[ms]");
+		System.out.println("SearcherImpl#search T4:" + (t5 - t4) + "[ms]");
+
 		return searchResult_;
 	}
 
