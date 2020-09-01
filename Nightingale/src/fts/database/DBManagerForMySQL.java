@@ -534,7 +534,6 @@ public class DBManagerForMySQL implements DBManager {
 		sql = sql.substring(0, sql.length() - 1);
 		sql = sql + sqlSelectPostings5;
 		List<String> r = new ArrayList<String>();
-
 		try {
 
 			String url = connectionURL();
@@ -549,7 +548,6 @@ public class DBManagerForMySQL implements DBManager {
 				pstmt.setString(i + 1, tokens.get(i).getToken());
 				pstmt.setString((i + tokens.size()) + 1, tokens.get(i).getToken());
 			}
-
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -557,6 +555,7 @@ public class DBManagerForMySQL implements DBManager {
 				r.add(pstingList);
 			}
 			pstmt.close();
+
 			return r;
 
 		} catch (SQLException e) {

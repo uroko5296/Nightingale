@@ -45,9 +45,11 @@ public class RetrieverImpl implements Retriever {
 			}
 			long s3 = System.currentTimeMillis();
 
+			/*
 			System.out.println("getSortedRecords etime1:" + (s1 - s) + "[ms]");
 			System.out.println("getSortedRecords etime2:" + (s2 - s1) + "[ms]");
 			System.out.println("getSortedRecords etime3:" + (s3 - s2) + "[ms]");
+			*/
 
 		}
 
