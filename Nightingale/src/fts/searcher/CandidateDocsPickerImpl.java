@@ -51,7 +51,6 @@ public class CandidateDocsPickerImpl implements CandidateDocsPicker {
 		for (int i = 1; i < docIdsList.size(); i++) {
 			docIds = Sets.intersection(docIds, docIdsList.get(i));
 		}
-		System.out.println("searchDocs2 docIds:" + docIds);
 
 		return docIds.stream().collect(Collectors.toList());
 

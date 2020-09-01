@@ -72,8 +72,11 @@ public class Main {
 	}
 
 	static void search(String query, Tokenizer tokenizer, int resultNum) {
+		long searchTimeStart = System.currentTimeMillis();
 		Searcher searcher = new SearcherImpl(tokenizer);
 		Displayer displayer = new DisplayerImpl(searcher.search(query, resultNum));
+		long searchTimeElapsed = System.currentTimeMillis() - searchTimeStart;
+		System.out.println("Main#main searchTimeElapsed:" + searchTimeElapsed + "[ms]");
 		displayer.displayResult();
 	}
 }

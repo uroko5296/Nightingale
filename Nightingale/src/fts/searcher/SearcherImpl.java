@@ -24,7 +24,6 @@ public class SearcherImpl implements Searcher {
 	 * List<p1,p2,...>はポジションのリスト。
 	 */
 	List<Integer> candidateDocs_;
-	Map<Integer, Integer> bases_;
 
 	/*
 	 * candidateDocs_のkeySetで表わされる文書IDの集合について、
