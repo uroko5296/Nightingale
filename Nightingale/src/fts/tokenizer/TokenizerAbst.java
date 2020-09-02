@@ -21,5 +21,5 @@ public abstract class TokenizerAbst implements Tokenizer {
 	}
 
 	@Override
-	public abstract List<Token> parseAll(String text);
+	public abstract List<Token> parse(String text);
 }

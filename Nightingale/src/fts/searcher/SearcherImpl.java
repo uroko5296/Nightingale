@@ -49,7 +49,7 @@ public class SearcherImpl implements Searcher {
 	public SearchResult search(String query, int n) {
 		long t0 = System.currentTimeMillis();
 		if (tokenList_ == null) {
-			tokenList_ = tokenizer_.parseAll(query);
+			tokenList_ = tokenizer_.parse(query);
 		}
 
 		long t1 = System.currentTimeMillis();

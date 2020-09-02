@@ -31,7 +31,7 @@ public class IndexTableManagerImpl implements IndexTableManager {
 		 * 文書IDとトークンリストからポスティングリストを作る。
 		 */
 
-		List<Token> tokenList = tokenizer.parseAll(document.getBody());
+		List<Token> tokenList = tokenizer.parse(document.getBody());
 
 		/*
 		 * ストレージ上の文書用のテーブル（転置インデックスではない。）に文書を追加し、文書IDを取得する。

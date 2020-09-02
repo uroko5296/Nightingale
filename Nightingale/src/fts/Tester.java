@@ -12,6 +12,7 @@ public class Tester {
 		ARGS.add(new String[] { "-s", "日本語" });
 		ARGS.add(new String[] { "-s", "世界経済" });
 		ARGS.add(new String[] { "-s", "情報学" });
+		ARGS.add(new String[] { "-s", "日本語 プログラミング言語" });
 	}
 
 	public static void main(String[] args) throws Exception {

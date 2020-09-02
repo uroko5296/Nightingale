@@ -11,7 +11,7 @@ import fts.searcher.Displayer;
 import fts.searcher.DisplayerImpl;
 import fts.searcher.Searcher;
 import fts.searcher.SearcherImpl;
-import fts.tokenizer.NGramTokenizer2;
+import fts.tokenizer.NGramTokenizer;
 import fts.tokenizer.Tokenizer;
 
 public class Main {
@@ -29,7 +29,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 
-		Tokenizer tokenizer = new NGramTokenizer2(ngramN, IGNORED_CHARS);
+		Tokenizer tokenizer = new NGramTokenizer(ngramN, IGNORED_CHARS);
 
 		System.out.println("Main#main	args:" + Arrays.toString(args));
 		long startTime = System.currentTimeMillis();
